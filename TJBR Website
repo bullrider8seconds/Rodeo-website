@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Texas Junior Bull Riders — Stats</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --muted:#9aa7b2;
+    --accent:#eab308;
+    --white:#f8fafc;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,#071027 0%, #071a2a 100%);
+    color:var(--white);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:18px;
+  }
+
+  header{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo{
+    width:56px;height:56px;border-radius:8px;
+    background:linear-gradient(135deg,#eab308,#f97316);
+    display:flex;align-items:center;justify-content:center;color:#071027;font-weight:800;
+    font-size:20px;
+  }
+  h1{font-size:20px;margin:0}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+
+  nav{display:flex;gap:10px;flex-wrap:wrap}
+  nav a{
+    color:var(--white);text-decoration:none;padding:8px 12px;border-radius:8px;font-size:14px;
+    background:transparent;border:1px solid rgba(255,255,255,0.04)
+  }
+  nav a:hover{background:rgba(255,255,255,0.03)}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:16px;
+  }
+
+  /* cards */
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+  }
+  .card.h-200{min-height:200px}
+
+  /* leaderboards */
+  .leaderboard{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  table{
+    width:100%;border-collapse:collapse;font-size:14px;
+  }
+  th,td{padding:8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  th{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* lists */
+  ul.simple{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+  ul.simple li{
+    padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);display:flex;justify-content:space-between;align-items:center;
+  }
+
+  /* responsive layout */
+  @media (min-width:980px){
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
+  }
+  @media (max-width:979px){
+    .col-4,.col-6,.col-8,.col-12{grid-column:span 12}
+  }
+
+  /* search/filter row */
+  .row-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  input[type="search"], select{
+    padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)
+  }
+
+  footer{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">TJ</div>
+    <div>
+      <h1>Texas Junior Bull Riders</h1>
+      <p class="lead">Team & Rider stats — placeholder data, points/outs set to 0</p>
+    </div>
+  </div>
+
+  <nav aria-label="Main">
+    <a href="#team-leaderboard">Team Leaderboard</a>
+    <a href="#rider-leaderboard">Rider Leaderboard</a>
+    <a href="#teams">Team List</a>
+    <a href="#riders">Rider List</a>
+    <a href="#bulls">Bulls</a>
+    <a href="#senior-steers">Senior Steers</a>
+  </nav>
+</header>
+
+<main>
+  <div class="grid" style="margin-bottom:16px">
+
+    <!-- Team Leaderboard -->
+    <div class="col-6 card" id="team-leaderboard">
+      <h3>Team Leaderboard</h3>
+      <p class="small">Points for the year are initialized to 0.</p>
+      <div class="leaderboard">
+        <table id="team-table" aria-describedby="team-leaderboard">
+          <thead>
+            <tr><th>Rank</th><th>Team</th><th>Points</th><th>Outs</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Rider Leaderboard -->
+    <div class="col-6 card" id="rider-leaderboard">
+      <h3>Rider Leaderboard</h3>
+      <p class="small">Points for the year are initialized to 0.</p>
+      <div style="margin-top:8px" class="row-controls">
+        <input id="rider-search" type="search" placeholder="Search rider..." />
+      </div>
+      <div style="margin-top:10px;overflow:auto" class="card h-200">
+        <table id="rider-table" aria-describedby="rider-leaderboard">
+          <thead>
+            <tr><th>Rank</th><th>Rider</th><th>Team</th><th>Points</th><th>Outs</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Team List -->
+    <div class="col-4 card" id="teams">
+      <h3>Team List</h3>
+      <ul class="simple" id="team-list">
+        <!-- teams inserted by JS -->
+      </ul>
+    </div>
+
+    <!-- Rider List -->
+    <div class="col-8 card" id="riders">
+      <h3>Rider List</h3>
+      <p class="small">Riders are alphabetized by last name per your request.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px" id="rider-list-columns">
+        <!-- JS will inject team columns with rider lists -->
+      </div>
+    </div>
+
+    <!-- Bulls -->
+    <div class="col-6 card" id="bulls">
+      <h3>Bulls (by Stock Contractor)</h3>
+      <p class="small">Outs per bull set to 0 for now.</p>
+      <div id="bulls-columns" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px"></div>
+    </div>
+
+    <!-- Senior Steers -->
+    <div class="col-6 card" id="senior-steers">
+      <h3>Senior Steers (by Stock Contractor)</h3>
+      <p class="small">Outs per steer set to 0 for now.</p>
+      <div id="senior-columns" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    Built for Texas Junior Bull Riders — data is editable inside this single HTML file. Host on GitHub Pages, Netlify, or Vercel.
+  </footer>
+</main>
+
+<script>
+/* === Data: edit this section to update teams / riders / stock === */
+
+/* Teams */
+const teams = [
+  { name: "Liberty Lightning", points: 0, outs: 0 },
+  { name: "Cleveland Cowboys", points: 0, outs: 0 }
+];
+
+/* Riders (grouped by team). Riders alphabetized by last name */
+const ridersByTeam = {
+  "Liberty Lightning": [
+    { first:"Mikayla", last:"Anthony", points:0, outs:0 },
+    { first:"Landon", last:"Dickens", points:0, outs:0 },
+    { first:"Kyri", last:"Jackson", points:0, outs:0 },
+    { first:"Cayden", last:"Mendez", points:0, outs:0 },
+    { first:"Keegan", last:"Sanford", points:0, outs:0 },
+    { first:"Presley", last:"Swearingen", points:0, outs:0 },
+    { first:"Weston", last:"Hoagland", points:0, outs:0 }
+  ],
+  "Cleveland Cowboys": [
+    { first:"Brantley", last:"Burch", points:0, outs:0 },
+    { first:"Carlos", last:"Borrero", points:0, outs:0 },
+    { first:"Penny", last:"Cashdollar", points:0, outs:0 },
+    { first:"TJ", last:"Fletcher", points:0, outs:0 },
+    { first:"Brently", last:"Hartinger", points:0, outs:0 },
+    { first:"Weslea", last:"Hatler", points:0, outs:0 },
+    { first:"Brayden", last:"Jacob", points:0, outs:0 },
+    { first:"Gabe", last:"Sonnier", points:0, outs:0 }
+  ]
+};
+
+/* Bulls grouped by stock contractor — listed alphanumerically */
+const bullsByContractor = {
+  "Dan Arnold": ["227","254","254K","Lil Crook","Top Twisted"],
+  "Joseph Culpepper": ["04 Whiskey Business","White Lightning"],
+  "Shawn McCown": ["106","224","691","Dog"],
+  "Jack Johnson": ["Good News","Slow Ride"]
+};
+
+/* Senior Steers grouped by contractor */
+const seniorByContractor = {
+  "Shawn McCown": ["33","Blueberry"],
+  "Joseph Culpepper": ["65 Merica","Mr Trix"]
+};
+
+/* === Rendering logic (no frameworks) === */
+
+function renderTeamLeaderboard(){
+  const tbody = document.querySelector("#team-table tbody");
+  tbody.innerHTML = "";
+  // sort teams by points desc (all 0 now) then name
+  const sorted = teams.slice().sort((a,b)=> b.points - a.points || a.name.localeCompare(b.name));
+  sorted.forEach((t,i)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>#${i+1}</td><td>${t.name}</td><td>${t.points}</td><td>${t.outs}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderRiderLeaderboard(filter=""){
+  const tbody = document.querySelector("#rider-table tbody");
+  tbody.innerHTML = "";
+  // flatten riders into array with team property
+  const flat = [];
+  for(const [team, arr] of Object.entries(ridersByTeam)){
+    arr.forEach(r=> flat.push({...r, team}));
+  }
+  // optional filter
+  const regex = new RegExp(filter.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), "i");
+  const filtered = flat.filter(r => regex.test(r.first + " " + r.last) || regex.test(r.team));
+  // sort by points desc then last name
+  filtered.sort((a,b)=> b.points - a.points || a.last.localeCompare(b.last) || a.first.localeCompare(b.first));
+  filtered.forEach((r,i)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>#${i+1}</td><td>${r.first} ${r.last}</td><td>${r.team}</td><td>${r.points}</td><td>${r.outs}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTeamList(){
+  const ul = document.querySelector("#team-list");
+  ul.innerHTML = "";
+  teams.forEach(t=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${t.name}</strong><span class="small">Points: ${t.points} • Outs: ${t.outs}</span>`;
+    ul.appendChild(li);
+  });
+}
+
+function renderRiderLists(){
+  const container = document.querySelector("#rider-list-columns");
+  container.innerHTML = "";
+  for(const [team, arr] of Object.entries(ridersByTeam)){
+    const col = document.createElement("div");
+    col.className="card";
+    const title = document.createElement("h4");
+    title.style.margin="0 0 8px 0";
+    title.textContent = team;
+    col.appendChild(title);
+    const ul = document.createElement("ul");
+    ul.className="simple";
+    // arr assumed already alphabetized by last name in data block
+    arr.forEach(r=>{
+      const li = document.createElement("li");
+      li.innerHTML = `<div>${r.first} ${r.last}</div><div class="small">Pts: ${r.points} • Outs: ${r.outs}</div>`;
+      ul.appendChild(li);
+    });
+    col.appendChild(ul);
+    container.appendChild(col);
+  }
+}
+
+function renderBulls(){
+  const container = document.querySelector("#bulls-columns");
+  container.innerHTML = "";
+  for(const [contractor, bulls] of Object.entries(bullsByContractor)){
+    const c = document.createElement("div");
+    c.className="card";
+    c.innerHTML = `<h4 style="margin:0 0 8px 0">${contractor}</h4>`;
+    const ul = document.createElement("ul");
+    ul.className = "simple";
+    bulls.forEach(b=>{
+      const li = document.createElement("li");
+      li.innerHTML = `<div>${b}</div><div class="small">Outs: 0 • Points: 0</div>`;
+      ul.appendChild(li);
+    });
+    c.appendChild(ul);
+    container.appendChild(c);
+  }
+}
+
+function renderSeniorSteers(){
+  const container = document.querySelector("#senior-columns");
+  container.innerHTML = "";
+  for(const [contractor, steers] of Object.entries(seniorByContractor)){
+    const c = document.createElement("div");
+    c.className="card";
+    c.innerHTML = `<h4 style="margin:0 0 8px 0">${contractor}</h4>`;
+    const ul = document.createElement("ul");
+    ul.className = "simple";
+    steers.forEach(s=>{
+      const li = document.createElement("li");
+      li.innerHTML = `<div>${s}</div><div class="small">Outs: 0 • Points: 0</div>`;
+      ul.appendChild(li);
+    });
+    c.appendChild(ul);
+    container.appendChild(c);
+  }
+}
+
+/* initial render */
+renderTeamLeaderboard();
+renderRiderLeaderboard();
+renderTeamList();
+renderRiderLists();
+renderBulls();
+renderSeniorSteers();
+
+/* search handler */
+document.getElementById("rider-search").addEventListener("input", e=>{
+  renderRiderLeaderboard(e.target.value.trim());
+});
+
+/* expose a small API for future editing via console:
+   window.TJBR = { teams, ridersByTeam, bullsByContractor, seniorByContractor, rerender: () => { ... } }
+*/
+window.TJBR = {
+  teams, ridersByTeam, bullsByContractor, seniorByContractor,
+  rerender: function(){
+    renderTeamLeaderboard();
+    renderRiderLeaderboard(document.getElementById("rider-search").value.trim());
+    renderTeamList();
+    renderRiderLists();
+    renderBulls();
+    renderSeniorSteers();
+  }
+};
+
+</script>
+</body>
+</html>
